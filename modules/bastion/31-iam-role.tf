@@ -1,6 +1,6 @@
 // Create a role which instances will assume.
 // This role has a policy saying it can be assumed by ec2 instances.
-resource "aws_iam_role" "this" {
+resource "aws_iam_role" "default" {
   name = "${local.upper_name}"
 
   assume_role_policy = <<EOF
@@ -21,13 +21,13 @@ EOF
 }
 
 // AdministratorAccess
-resource "aws_iam_role_policy_attachment" "this" {
-  role       = "${aws_iam_role.this.name}"
+resource "aws_iam_role_policy_attachment" "default" {
+  role       = "${aws_iam_role.default.name}"
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
 // Create a instance profile for the role.
-resource "aws_iam_instance_profile" "this" {
+resource "aws_iam_instance_profile" "default" {
   name = "${local.upper_name}"
-  role = "${aws_iam_role.this.name}"
+  role = "${aws_iam_role.default.name}"
 }

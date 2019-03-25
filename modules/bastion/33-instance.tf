@@ -1,18 +1,18 @@
-resource "aws_key_pair" "this" {
+resource "aws_key_pair" "default" {
   count      = "${var.public_key_path != "" ? 1 : 0}"
   key_name   = "${local.key_name}"
   public_key = "${file(var.public_key_path)}"
 }
 
-resource "aws_instance" "this" {
-  ami                  = "${var.ami_id != "" ? var.ami_id : data.aws_ami.this.id}"
+resource "aws_instance" "default" {
+  ami                  = "${var.ami_id != "" ? var.ami_id : data.aws_ami.default.id}"
   instance_type        = "${var.type != "" ? var.type : "t2.micro"}"
   subnet_id            = "${var.subnet_id}"
-  iam_instance_profile = "${aws_iam_instance_profile.this.id}"
+  iam_instance_profile = "${aws_iam_instance_profile.default.id}"
   user_data            = "${data.template_file.setup.rendered}"
 
   vpc_security_group_ids = [
-    "${aws_security_group.this.id}",
+    "${aws_security_group.default.id}",
   ]
 
   key_name = "${local.key_name}"
@@ -23,8 +23,8 @@ resource "aws_instance" "this" {
   }
 }
 
-resource "aws_eip" "this" {
-  instance = "${aws_instance.this.id}"
+resource "aws_eip" "default" {
+  instance = "${aws_instance.default.id}"
 
   vpc = true
 
